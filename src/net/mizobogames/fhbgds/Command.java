@@ -4,6 +4,7 @@ import java.util.List;
 
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
+import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
 
 public abstract class Command {
@@ -22,7 +23,7 @@ public abstract class Command {
 		this(commandString, false, helpString);
 	}
 	
-	public abstract void execute(IChannel channel, IUser commandAuthor, IGuild guild, List<String> command);
+	public abstract void execute(IChannel channel, IUser commandAuthor, IGuild guild, List<String> command, IMessage message);
 	
 	public String getCommandString(){
 		return this.command;

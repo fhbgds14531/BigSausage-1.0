@@ -3,6 +3,7 @@ package net.mizobogames.fhbgds;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.mizobogames.fhbgds.commands.CommandAddFile;
 import net.mizobogames.fhbgds.commands.CommandAddTts;
 import net.mizobogames.fhbgds.commands.CommandBugreport;
 import net.mizobogames.fhbgds.commands.CommandEnable;
@@ -14,6 +15,7 @@ import net.mizobogames.fhbgds.commands.CommandStatus;
 import net.mizobogames.fhbgds.commands.CommandTts;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
+import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
 
 public class Commands {
@@ -30,6 +32,7 @@ public class Commands {
 		commands.add(new CommandTts("tts", "Repeat a random tts string from the tts list. Usage: `%p% %n%`"));
 		commands.add(new CommandAddTts("add-tts", "Add a tts string to the tts list. Usage: `%p% %n% <tts string>`"));
 		commands.add(new CommandRemoveTts("remove-tts", "Remove a tts string from the tts list. Usage: `%p% %n% <tts string>`"));
+		commands.add(new CommandAddFile("add-file", "Adds a file to be linked or played. Audio files must be of the .wav format. Usage: `%p% %n% <a name for the file> <default trigger list>`"));
 		commands.add(new CommandBugreport("bugreport", "Sends a bug report to the official channel, the report includes your user ID and name in case you need to be contacted. " +
 				"Usage: `%p% %n% <description of what went wrong>`"));
 		commands.add(new CommandShutdown("shutdown", ""));
@@ -45,13 +48,13 @@ public class Commands {
 		return help;
 	}
 	
-	public boolean findAndExecuteCommand(List<String> messageContent, IChannel channel, IUser author, IGuild guild){
+	public boolean findAndExecuteCommand(List<String> messageContent, IChannel channel, IUser author, IGuild guild, IMessage message){
 		if(messageContent.get(0).contentEquals(BigSausage.PREFIX)){
 			if(messageContent.size() > 1){
-				this.getFromString(messageContent.get(1)).execute(channel, author, guild, messageContent);
+				this.getFromString(messageContent.get(1)).execute(channel, author, guild, messageContent, message);
 				return true;
 			}else{
-				help.execute(channel, author, guild, messageContent);
+				help.execute(channel, author, guild, messageContent, message);
 				return true;
 			}
 		}else{
@@ -66,7 +69,7 @@ public class Commands {
 		}
 
 		@Override
-		public void execute(IChannel channel, IUser commandAuthor, IGuild guild, List<String> command) {
+		public void execute(IChannel channel, IUser commandAuthor, IGuild guild, List<String> command, IMessage message) {
 			List<Command> commands = Commands.commands;
 			List<String> names = new ArrayList<String>();
 			for(Command c : commands){

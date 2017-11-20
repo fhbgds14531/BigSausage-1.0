@@ -41,7 +41,6 @@ public class SettingsManager {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
 	}
 	
 	@SuppressWarnings("unchecked")

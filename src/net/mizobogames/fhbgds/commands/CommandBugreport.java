@@ -6,6 +6,7 @@ import net.mizobogames.fhbgds.BigSausage;
 import net.mizobogames.fhbgds.Command;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
+import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
 
 public class CommandBugreport extends Command {
@@ -15,7 +16,7 @@ public class CommandBugreport extends Command {
 	}
 
 	@Override
-	public void execute(IChannel channel, IUser commandAuthor, IGuild guild, List<String> command) {
+	public void execute(IChannel channel, IUser commandAuthor, IGuild guild, List<String> command, IMessage msg) {
 		String message = "";
 		message += "User: " + commandAuthor.getName() + " (" + commandAuthor.getStringID() + ", " + commandAuthor.mention() + ")\n";
 		message += "Server: " + guild.getName() + " (" + guild.getStringID() + "): Owned by: " + guild.getOwner().getName() + " (" + guild.getOwner().getStringID() + "), " + 
