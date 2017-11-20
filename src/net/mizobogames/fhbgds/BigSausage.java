@@ -22,10 +22,11 @@ public class BigSausage {
 
 	public static final String VERSION = "1.0";
 	public static final String CHANGELOG = "Completely rewrote the entire bot from the ground up.";
+	public static final String ME = "198575970624471040";
 
 	private static String TOKEN;
 	public static final String PREFIX = "!bs";
-	private static IDiscordClient client;
+	public static IDiscordClient client;
 	public static Commands commands;
 
 	public static void main(String[] args) throws IOException {
@@ -38,25 +39,40 @@ public class BigSausage {
 	}
 
 	@EventSubscriber
-	public void onGuildJoin(GuildCreateEvent event) {
+	public void onGuildJoin(GuildCreateEvent event) throws IOException {
 		IGuild guild = event.getGuild();
-		File guildDir = new File("guilds/" + guild.getStringID());
+		final String guildLocString = "guilds/" + guild.getStringID();
+		File guildDir = new File(guildLocString);
 		if (!guildDir.exists()) {
 			guildDir.mkdirs();
 			SettingsManager.setupDefaultSettingsForGuild(guild);
 			guild.getDefaultChannel().sendMessage("Hello, I am BigSausage! To enable me, please type `" + PREFIX + " enable` and for help, type `" + PREFIX + " help`");
 		}
+		File ttsFile = new File(guildLocString + "/tts.txt");
+		if (!ttsFile.exists()) {
+			ttsFile.createNewFile();
+			System.out.println("Created new tts file for guild \"" + guild.getName() + "\"");
+		}
+		File filesDir = new File(guildLocString + "/files");
+		if(!filesDir.exists()){
+			filesDir.mkdirs();
+			System.out.println("Created files directory for guild \"" + guild.getStringID() + "\"");
+		}
 	}
 
 	@EventSubscriber
 	public void onReady(ReadyEvent event) {
-		if (new File("DEBUG.token").exists()) {
-			// client.changeUsername("BigSausage - Beta");
+		if (new File("DEBUG.token").exists() && client.getApplicationName().contentEquals("BigSausage")) {
+			client.changeUsername("BigSausage - Beta");
 			client.changePlayingText("under maintinence");
-		} else {
+		} else if(client.getApplicationName().contentEquals("BigSausage - Beta")){
 			client.changeUsername("BigSausage");
 		}
 		System.out.println("BigSausage is ready for mouths.");
+	}
+
+	public static void shutdown() {
+		client.logout();
 	}
 
 	@EventSubscriber
@@ -71,6 +87,8 @@ public class BigSausage {
 		IChannel channel = message.getChannel();
 		IGuild guild = message.getGuild();
 
-		commands.findAndExecuteCommand(wordList, channel, user, guild);
+		if(!commands.findAndExecuteCommand(wordList, channel, user, guild)){
+			
+		}
 	}
 }

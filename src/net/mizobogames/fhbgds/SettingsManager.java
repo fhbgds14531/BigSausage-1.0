@@ -23,6 +23,7 @@ public class SettingsManager {
 		return obj.get(setting);
 	}
 
+	@SuppressWarnings("unchecked")
 	public static void setSettingForGuild(IGuild guild, String setting, Object newValue) {
 		JSONObject obj = getSettingsForGuild(guild);
 		obj.put(setting, newValue);
@@ -43,6 +44,7 @@ public class SettingsManager {
 		
 	}
 	
+	@SuppressWarnings("unchecked")
 	private static JSONObject getSettingsForGuild(IGuild guild) {
 		checkForFileAndCreateAndSetupDefaults(guild);
 		JSONParser p = new JSONParser();
@@ -79,6 +81,7 @@ public class SettingsManager {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public static void setupDefaultSettingsForGuild(IGuild guild) {
 		File guildSettingsFile = new File("guilds/" + guild.getStringID() + "/settings/settings.txt");
 		if (guildSettingsFile.exists()) {

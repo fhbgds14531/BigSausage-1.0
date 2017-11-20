@@ -19,8 +19,13 @@ public class CommandHelp extends Command{
 		if(command.size() == 2){
 			channel.sendMessage(getHelpString());
 		}else if(command.size() == 3){
-			String s = BigSausage.commands.getFromString(command.get(2)).getHelpString();
-			channel.sendMessage(s);
+			Command c = BigSausage.commands.getFromString(command.get(2));
+			String s = c.getHelpString();
+			if(!c.getIsHidden()){
+				channel.sendMessage(s);
+			}else{
+				channel.sendMessage(getHelpString());
+			}
 		}
 	}
 }
