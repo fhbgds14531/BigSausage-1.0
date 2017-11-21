@@ -82,11 +82,13 @@ public class SettingsManager {
 
 	@SuppressWarnings("unchecked")
 	public static void setupDefaultSettingsForGuild(IGuild guild) {
+		File settingsDir = new File("guilds/" + guild.getStringID() + "/settings");
 		File guildSettingsFile = new File("guilds/" + guild.getStringID() + "/settings/settings.txt");
 		if (guildSettingsFile.exists()) {
 			guildSettingsFile.delete();
 		}
 		try {
+			settingsDir.mkdirs();
 			guildSettingsFile.createNewFile();
 		} catch (IOException e) {
 			e.printStackTrace();

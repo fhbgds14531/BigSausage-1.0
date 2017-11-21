@@ -45,20 +45,26 @@ public class CommandListFiles extends Command {
 				if (audioFileIndex.exists() && doAudio) {
 					JSONObject audioIndex = CommandAddFile.getIndexFileContents(guild, audioFileIndex);
 					JSONArray ja = (JSONArray) audioIndex.get("index");
+					if(ja == null) ja = new JSONArray();
 					ja.forEach(s -> audioIndexStrings.add(String.valueOf(s)));
 				}
 				if (imageFileIndex.exists() && doImages) {
 					JSONObject imageIndex = CommandAddFile.getIndexFileContents(guild, imageFileIndex);
 					JSONArray ja = (JSONArray) imageIndex.get("index");
+					if(ja == null) ja = new JSONArray();
 					ja.forEach(s -> imageIndexStrings.add(String.valueOf(s)));
 				}
 				String audioList = "Audio Clips:\n";
 				if (!audioIndexStrings.isEmpty()) {
 					audioList += "```" + Util.getCommaSeparatedFormattedList(audioIndexStrings) + "```";
+				}else{
+					audioList = "There are currently no audio clips.";
 				}
 				String imageList = "Images:\n";
 				if (!imageIndexStrings.isEmpty()) {
 					imageList += "```" + Util.getCommaSeparatedFormattedList(imageIndexStrings) + "```";
+				}else{
+					imageList = "There are currently no images.";
 				}
 				String output = "Error. If you're seeing this, please report the incident using `" + BigSausage.PREFIX + " bugreport <information about the issue>`";
 				if (doImages && !doAudio) {

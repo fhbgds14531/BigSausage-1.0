@@ -165,7 +165,6 @@ public class CommandAddFile extends Command {
 		try {
 			obj = (JSONObject) p.parse(new FileReader(indexFile));
 		} catch (Exception e) {
-			e.printStackTrace();
 			return new JSONObject();
 		}
 		if (obj != null) {

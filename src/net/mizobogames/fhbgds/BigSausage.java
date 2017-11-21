@@ -35,7 +35,8 @@ import sx.blah.discord.util.audio.events.TrackFinishEvent;
 
 public class BigSausage {
 
-	public static final String VERSION = "1.0";
+	public static final String TOKEN_FILE_NAME = "BigSausage.token";
+	public static final String VERSION = "1.0.1";
 	public static final String CHANGELOG = "Completely rewrote the entire bot from the ground up.";
 	public static final String ME = "198575970624471040";
 
@@ -46,7 +47,7 @@ public class BigSausage {
 
 	public static void main(String[] args) throws IOException {
 		commands = new Commands();
-		TOKEN = Files.readAllLines(new File("TOKEN.token").toPath()).get(0);
+		TOKEN = Files.readAllLines(new File(TOKEN_FILE_NAME).toPath()).get(0);
 		System.out.println("Logging in...");
 		client = new ClientBuilder().withToken(TOKEN).withRecommendedShardCount().build();
 		client.getDispatcher().registerListener(new BigSausage());
@@ -61,7 +62,7 @@ public class BigSausage {
 		if (!guildDir.exists()) {
 			guildDir.mkdirs();
 			SettingsManager.setupDefaultSettingsForGuild(guild);
-			guild.getDefaultChannel().sendMessage("Hello, I am BigSausage! To enable me, please type `" + PREFIX + " enable` and for help, type `" + PREFIX + " help`");
+//			guild.getDefaultChannel().sendMessage("Hello, I am BigSausage! To enable me, please type `" + PREFIX + " enable` and for help, type `" + PREFIX + " help`");
 		}
 		File ttsFile = new File(guildLocString + "/tts.txt");
 		if (!ttsFile.exists()) {
@@ -77,11 +78,11 @@ public class BigSausage {
 
 	@EventSubscriber
 	public void onReady(ReadyEvent event) {
-		if (new File("DEBUG.token").exists() && client.getApplicationName().contentEquals("BigSausage 2")) {
-			client.changeUsername("BigSausage 2 - Beta");
+		if (new File("DEBUG.token").exists() && client.getOurUser().getName().contentEquals("BigSausage")) {
+			client.changeUsername("BigSausage - Beta");
 			client.changePlayingText("under maintinence");
-		} else if (client.getApplicationName().contentEquals("BigSausage 2 - Beta")) {
-			client.changeUsername("BigSausage 2");
+		} else if (client.getOurUser().getName().contentEquals("BigSausage - Beta")) {
+			client.changeUsername("BigSausage");
 		}
 		System.out.println("BigSausage is ready for mouths.");
 	}
@@ -112,6 +113,7 @@ public class BigSausage {
 					if (audioFileIndex.exists()) {
 						JSONObject audioIndex = CommandAddFile.getIndexFileContents(guild, audioFileIndex);
 						JSONArray ja = (JSONArray) audioIndex.get("index");
+						if(ja == null) ja = new JSONArray();
 						List<String> indexStrings = new ArrayList<String>();
 						ja.forEach(s -> indexStrings.add(String.valueOf(s)));
 						for (String clipName : indexStrings) {
@@ -136,6 +138,7 @@ public class BigSausage {
 					if (imageFileIndex.exists()) {
 						JSONObject imageIndex = CommandAddFile.getIndexFileContents(guild, imageFileIndex);
 						JSONArray ja = (JSONArray) imageIndex.get("index");
+						if(ja == null) ja = new JSONArray();
 						List<String> indexStrings = new ArrayList<String>();
 						ja.forEach(s -> indexStrings.add(String.valueOf(s)));
 						for (String imageName : indexStrings) {
@@ -147,6 +150,7 @@ public class BigSausage {
 									if (word.toLowerCase().contains(trigger)) {
 										String filename = (String) imageIndex.get(imageName + "_name");
 										File file = new File("guilds/" + guild.getStringID() + "/files/" + filename);
+										System.out.println("Sending file \"" + filename + "\" to guild \"" + guild.getName() + "\"...");
 										channel.sendFile(file);
 									}
 								}

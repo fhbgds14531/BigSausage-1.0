@@ -23,6 +23,7 @@ public class CommandEnable extends Command{
 	public void execute(IChannel channel, IUser commandAuthor, IGuild guild, List<String> command, IMessage message) {
 		if(Util.hasPermission(1, guild, commandAuthor)){
 			SettingsManager.setSettingForGuild(guild, "enabled", stateToSet);
+			channel.sendMessage("BigSausage is now " + (stateToSet ? "enabled." : " disabled."));
 		}
 	}
 
