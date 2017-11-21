@@ -61,7 +61,7 @@ public class SettingsManager {
 			JSONArray trusted = new JSONArray();
 			o.put("trusted_users", trusted);
 			o.put("enabled", false);
-			o.put("max_clips_per_message", 4);
+			o.put("max_clips_per_message", 4L);
 			return o;
 		}
 	}
@@ -97,7 +97,7 @@ public class SettingsManager {
 		JSONArray trusted = new JSONArray();
 		o.put("trusted_users", trusted);
 		o.put("enabled", false);
-		o.put("max_clips_per_message", 4);
+		o.put("max_clips_per_message", 4L);
 		try {
 			FileWriter writer = new FileWriter(guildSettingsFile);
 			writer.write(o.toJSONString());

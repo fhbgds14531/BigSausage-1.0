@@ -61,7 +61,19 @@ public class CommandAddFile extends Command {
 				return;
 			}
 			if (attachments.get(0).getFilename().endsWith(".wav")) {
-				this.downloadAttachment(attachments.get(0), guild);
+				String filename = attachments.get(0).getFilename().toLowerCase();
+				String extension = filename.substring(filename.indexOf("."));
+				File attachment = new File("guilds/" + guild.getStringID() + "/files/" + filename);
+				if(attachment.exists()){
+					int i = 0;
+					filename = filename.replace(extension, "_(0)" + extension);
+					while(attachment.exists()){
+						filename = filename.replace("_(" + i + ")" + extension, "_(" + (i+1) + ")" + extension);
+						attachment = new File("guilds/" + guild.getStringID() + "/files/" + filename);
+						i++;
+					}
+				}
+				this.downloadAttachment(attachments.get(0), filename, guild);
 				List<String> triggers = new ArrayList<String>();
 				int i = 0;
 				for(String word : command){
@@ -81,11 +93,24 @@ public class CommandAddFile extends Command {
 					ja.add(s);
 				}
 				obj.put("index", index);
-				obj.put(command.get(2).toLowerCase() + "_name", attachments.get(0).getFilename().toLowerCase());
+				obj.put(command.get(2).toLowerCase() + "_name", filename);
 				obj.put(command.get(2).toLowerCase(), ja);
 				saveIndexFileContents(audioFileIndex, obj);
+				channel.sendMessage("Succesfully added file under the name \"" + command.get(2).toLowerCase() + "\"");
 			} else if (isImageFilenameValid(attachments.get(0).getFilename())) {
-				this.downloadAttachment(attachments.get(0), guild);
+				String filename = attachments.get(0).getFilename().toLowerCase();
+				String extension = filename.substring(filename.indexOf("."));
+				File attachment = new File("guilds/" + guild.getStringID() + "/files/" + filename);
+				if(attachment.exists()){
+					int i = 0;
+					filename = filename.replace(extension, "_(0)" + extension);
+					while(attachment.exists()){
+						filename = filename.replace("_(" + i + ")" + extension, "_(" + (i+1) + ")" + extension);
+						attachment = new File("guilds/" + guild.getStringID() + "/files/" + filename);
+						i++;
+					}
+				}
+				this.downloadAttachment(attachments.get(0), filename, guild);
 				List<String> triggers = new ArrayList<String>();
 				int i = 0;
 				for(String word : command){
@@ -105,19 +130,22 @@ public class CommandAddFile extends Command {
 					ja.add(s);
 				}
 				obj.put("index", index);
-				obj.put(command.get(2).toLowerCase() + "_name", attachments.get(0).getFilename().toLowerCase());
+				obj.put(command.get(2).toLowerCase() + "_name", filename);
 				obj.put(command.get(2).toLowerCase(), ja);
 				saveIndexFileContents(imageFileIndex, obj);
+				channel.sendMessage("Succesfully added file under the name \"" + command.get(2).toLowerCase() + "\"");
+			}else{
+				channel.sendMessage("Invalid file type. Audio clips must be of the `.wav` format and images must be one of the following: `.jpg` `.jpeg` `.png` `.bmp`");
 			}
 		}
 	}
 
-	private void downloadAttachment(Attachment a, IGuild guild){
+	private void downloadAttachment(Attachment a, String filename, IGuild guild){
 		try {
 			System.setProperty("http.agent", "Chrome");
 			URL url = new URL(a.getUrl());
 	        BufferedInputStream bis = new BufferedInputStream(url.openStream());
-	        FileOutputStream fis = new FileOutputStream(new File("guilds/" + guild.getStringID() + "/files/" + a.getFilename().toLowerCase()));
+	        FileOutputStream fis = new FileOutputStream(new File("guilds/" + guild.getStringID() + "/files/" + filename));
 	        byte[] buffer = new byte[1024];
 	        int count=0;
 	        while((count = bis.read(buffer,0,1024)) != -1)

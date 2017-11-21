@@ -8,11 +8,18 @@ import net.mizobogames.fhbgds.commands.CommandAddTts;
 import net.mizobogames.fhbgds.commands.CommandBugreport;
 import net.mizobogames.fhbgds.commands.CommandEnable;
 import net.mizobogames.fhbgds.commands.CommandHelp;
+import net.mizobogames.fhbgds.commands.CommandListFiles;
+import net.mizobogames.fhbgds.commands.CommandMaxClips;
+import net.mizobogames.fhbgds.commands.CommandRemoveFile;
+import net.mizobogames.fhbgds.commands.CommandRemoveTrust;
 import net.mizobogames.fhbgds.commands.CommandRemoveTts;
 import net.mizobogames.fhbgds.commands.CommandRestart;
+import net.mizobogames.fhbgds.commands.CommandRoll;
 import net.mizobogames.fhbgds.commands.CommandShutdown;
 import net.mizobogames.fhbgds.commands.CommandStatus;
+import net.mizobogames.fhbgds.commands.CommandTrust;
 import net.mizobogames.fhbgds.commands.CommandTts;
+import net.mizobogames.fhbgds.commands.CommandUpdate;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IMessage;
@@ -32,9 +39,16 @@ public class Commands {
 		commands.add(new CommandTts("tts", "Repeat a random tts string from the tts list. Usage: `%p% %n%`"));
 		commands.add(new CommandAddTts("add-tts", "Add a tts string to the tts list. Usage: `%p% %n% <tts string>`"));
 		commands.add(new CommandRemoveTts("remove-tts", "Remove a tts string from the tts list. Usage: `%p% %n% <tts string>`"));
+		commands.add(new CommandTrust("trust", "Add a user to the trusted users list. Usage: `%p% %n% \\@<username>` to add a user or `%p% %n%` to list trusted users."));
+		commands.add(new CommandRemoveTrust("remove-trust", "Remove a user from the trusted users list. Usage: `%p% %n% \\@<username>`"));
+		commands.add(new CommandRemoveFile("remove-file", "Remove a file from the pool. Usage: `%p% %n% <file_name>`."));
+		commands.add(new CommandMaxClips("max-clips", "List or edit the maximum number of audio clips that BigSausage will queue per message. Usage: `%p% %n%` to list the current setting or `%p% %n% <number>` to set a new maximum."));
+		commands.add(new CommandRoll("roll", "Roll some dice. Usage: `%p% %n% <X>d<Y>` where X is the number of dice and Y is the number of sides per die."));
 		commands.add(new CommandAddFile("add-file", "Adds a file to be linked or played. Audio files must be of the .wav format. Usage: `%p% %n% <a name for the file> <default trigger list>`"));
+		commands.add(new CommandListFiles("list", "Lists files that have been uploaded. If the third parameter is left blank, will list all files. Usage: `%p% %n% <images|audio>`"));
 		commands.add(new CommandBugreport("bugreport", "Sends a bug report to the official channel, the report includes your user ID and name in case you need to be contacted. " +
 				"Usage: `%p% %n% <description of what went wrong>`"));
+		commands.add(new CommandUpdate("update", ""));
 		commands.add(new CommandShutdown("shutdown", ""));
 		commands.add(new CommandRestart("restart", ""));
 	}

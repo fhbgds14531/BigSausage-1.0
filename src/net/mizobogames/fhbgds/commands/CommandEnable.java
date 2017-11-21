@@ -4,6 +4,7 @@ import java.util.List;
 
 import net.mizobogames.fhbgds.Command;
 import net.mizobogames.fhbgds.SettingsManager;
+import net.mizobogames.fhbgds.Util;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IMessage;
@@ -20,7 +21,9 @@ public class CommandEnable extends Command{
 
 	@Override
 	public void execute(IChannel channel, IUser commandAuthor, IGuild guild, List<String> command, IMessage message) {
-		SettingsManager.setSettingForGuild(guild, "enabled", stateToSet);
+		if(Util.hasPermission(1, guild, commandAuthor)){
+			SettingsManager.setSettingForGuild(guild, "enabled", stateToSet);
+		}
 	}
 
 }

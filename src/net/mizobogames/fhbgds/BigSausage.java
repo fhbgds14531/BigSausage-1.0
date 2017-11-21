@@ -77,11 +77,11 @@ public class BigSausage {
 
 	@EventSubscriber
 	public void onReady(ReadyEvent event) {
-		if (new File("DEBUG.token").exists() && client.getApplicationName().contentEquals("BigSausage")) {
-			client.changeUsername("BigSausage - Beta");
+		if (new File("DEBUG.token").exists() && client.getApplicationName().contentEquals("BigSausage 2")) {
+			client.changeUsername("BigSausage 2 - Beta");
 			client.changePlayingText("under maintinence");
-		} else if (client.getApplicationName().contentEquals("BigSausage - Beta")) {
-			client.changeUsername("BigSausage");
+		} else if (client.getApplicationName().contentEquals("BigSausage 2 - Beta")) {
+			client.changeUsername("BigSausage 2");
 		}
 		System.out.println("BigSausage is ready for mouths.");
 	}
@@ -90,6 +90,7 @@ public class BigSausage {
 		client.logout();
 	}
 
+	@SuppressWarnings("unchecked")
 	@EventSubscriber
 	public void onMessage(MessageReceivedEvent event) throws FileNotFoundException {
 		SecureRandom rand = new SecureRandom();
@@ -107,7 +108,6 @@ public class BigSausage {
 				File indexDir = new File("guilds/" + guild.getStringID() + "/files/indices");
 				File audioFileIndex = new File("guilds/" + guild.getStringID() + "/files/indices/audioIndex.json");
 				File imageFileIndex = new File("guilds/" + guild.getStringID() + "/files/indices/imageIndex.json");
-
 				if (indexDir.exists()) {
 					if (audioFileIndex.exists()) {
 						JSONObject audioIndex = CommandAddFile.getIndexFileContents(guild, audioFileIndex);
@@ -190,6 +190,26 @@ public class BigSausage {
 
 	private AudioPlayer getPlayer(IGuild guild) {
 		return AudioPlayer.getAudioPlayerForGuild(guild);
+	}
+	
+	public static void tryRestart(IChannel outputChannel){
+		try {
+			outputChannel.sendMessage("Restarting...");
+			Runtime.getRuntime().exec("cmd /c start \"\" restart.bat");
+			shutdown();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void tryRestartForUpdate(IChannel outputChannel){
+		try {
+			outputChannel.sendMessage("Restarting...");
+			Runtime.getRuntime().exec("cmd /c start \"\" rename.bat");
+			shutdown();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private void queueFile(File f, IGuild guild, IVoiceChannel channelToJoin, IUser triggerUser, boolean commanded) {

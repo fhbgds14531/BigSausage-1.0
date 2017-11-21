@@ -1,6 +1,5 @@
 package net.mizobogames.fhbgds.commands;
 
-import java.io.IOException;
 import java.util.List;
 
 import net.mizobogames.fhbgds.BigSausage;
@@ -19,13 +18,7 @@ public class CommandRestart extends Command {
 	@Override
 	public void execute(IChannel channel, IUser commandAuthor, IGuild guild, List<String> command, IMessage message) {
 		if(commandAuthor.getStringID().contentEquals(BigSausage.ME)){
-			try {
-				channel.sendMessage("Restarting...");
-				Runtime.getRuntime().exec("cmd /c start \"\" restart.bat");
-				BigSausage.client.logout();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			BigSausage.tryRestart(channel);
 		}
 	}
 
