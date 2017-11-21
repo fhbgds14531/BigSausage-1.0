@@ -13,7 +13,6 @@ import java.util.Optional;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import net.mizobogames.fhbgds.commands.CommandAddFile;
 import sx.blah.discord.api.ClientBuilder;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.events.EventSubscriber;
@@ -35,9 +34,9 @@ import sx.blah.discord.util.audio.events.TrackFinishEvent;
 
 public class BigSausage {
 
-	public static final String TOKEN_FILE_NAME = "BigSausage.token";
-	public static final String VERSION = "1.0.1";
-	public static final String CHANGELOG = "Completely rewrote the entire bot from the ground up.";
+	public static final String TOKEN_FILE_NAME = "TOKEN.token";
+	public static final String VERSION = "1.2.0";
+	public static final String CHANGELOG = "Added trigger manipulation.";
 	public static final String ME = "198575970624471040";
 
 	private static String TOKEN;
@@ -46,6 +45,7 @@ public class BigSausage {
 	public static Commands commands;
 
 	public static void main(String[] args) throws IOException {
+		System.setProperty("http.agent", "Chrome");
 		commands = new Commands();
 		TOKEN = Files.readAllLines(new File(TOKEN_FILE_NAME).toPath()).get(0);
 		System.out.println("Logging in...");
@@ -103,15 +103,19 @@ public class BigSausage {
 
 		IChannel channel = message.getChannel();
 		IGuild guild = message.getGuild();
-
+		
+		if(message.getContent().replace("!", "").trim().contentEquals(client.getOurUser().mention().replace("!", ""))){
+			commands.getFromString("help").execute(channel, user, guild, Arrays.asList(new String[] {PREFIX, "help"}), message);
+		}
+		
 		if (!commands.findAndExecuteCommand(wordList, channel, user, guild, message)) {
 			if ((boolean) SettingsManager.getSettingForGuild(guild, "enabled")) {
 				File indexDir = new File("guilds/" + guild.getStringID() + "/files/indices");
-				File audioFileIndex = new File("guilds/" + guild.getStringID() + "/files/indices/audioIndex.json");
+				File audioFileIndex = Util.getAudioIndexFile(guild);
 				File imageFileIndex = new File("guilds/" + guild.getStringID() + "/files/indices/imageIndex.json");
 				if (indexDir.exists()) {
 					if (audioFileIndex.exists()) {
-						JSONObject audioIndex = CommandAddFile.getIndexFileContents(guild, audioFileIndex);
+						JSONObject audioIndex = Util.getJsonObjectFromFile(guild, audioFileIndex);
 						JSONArray ja = (JSONArray) audioIndex.get("index");
 						if(ja == null) ja = new JSONArray();
 						List<String> indexStrings = new ArrayList<String>();
@@ -136,7 +140,7 @@ public class BigSausage {
 						}
 					}
 					if (imageFileIndex.exists()) {
-						JSONObject imageIndex = CommandAddFile.getIndexFileContents(guild, imageFileIndex);
+						JSONObject imageIndex = Util.getJsonObjectFromFile(guild, imageFileIndex);
 						JSONArray ja = (JSONArray) imageIndex.get("index");
 						if(ja == null) ja = new JSONArray();
 						List<String> indexStrings = new ArrayList<String>();

@@ -37,19 +37,19 @@ public class CommandListFiles extends Command {
 		File filesDir = new File("guilds/" + guild.getStringID() + "/files/");
 		if (filesDir.exists()) {
 			File indexDir = new File("guilds/" + guild.getStringID() + "/files/indices");
-			File audioFileIndex = new File("guilds/" + guild.getStringID() + "/files/indices/audioIndex.json");
-			File imageFileIndex = new File("guilds/" + guild.getStringID() + "/files/indices/imageIndex.json");
+			File audioFileIndex = Util.getAudioIndexFile(guild);
+			File imageFileIndex = Util.getImageIndexFile(guild);
 			List<String> imageIndexStrings = new ArrayList<String>();
 			List<String> audioIndexStrings = new ArrayList<String>();
 			if (indexDir.exists()) {
 				if (audioFileIndex.exists() && doAudio) {
-					JSONObject audioIndex = CommandAddFile.getIndexFileContents(guild, audioFileIndex);
+					JSONObject audioIndex = Util.getJsonObjectFromFile(guild, audioFileIndex);
 					JSONArray ja = (JSONArray) audioIndex.get("index");
 					if(ja == null) ja = new JSONArray();
 					ja.forEach(s -> audioIndexStrings.add(String.valueOf(s)));
 				}
 				if (imageFileIndex.exists() && doImages) {
-					JSONObject imageIndex = CommandAddFile.getIndexFileContents(guild, imageFileIndex);
+					JSONObject imageIndex = Util.getJsonObjectFromFile(guild, imageFileIndex);
 					JSONArray ja = (JSONArray) imageIndex.get("index");
 					if(ja == null) ja = new JSONArray();
 					ja.forEach(s -> imageIndexStrings.add(String.valueOf(s)));

@@ -3,17 +3,13 @@ package net.mizobogames.fhbgds.commands;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 
 import net.mizobogames.fhbgds.BigSausage;
 import net.mizobogames.fhbgds.Command;
@@ -34,8 +30,8 @@ public class CommandAddFile extends Command {
 	@Override
 	public void execute(IChannel channel, IUser commandAuthor, IGuild guild, List<String> command, IMessage message) {
 		File indexDir = new File("guilds/" + guild.getStringID() + "/files/indices");
-		File audioFileIndex = new File("guilds/" + guild.getStringID() + "/files/indices/audioIndex.json");
-		File imageFileIndex = new File("guilds/" + guild.getStringID() + "/files/indices/imageIndex.json");
+		File audioFileIndex = Util.getAudioIndexFile(guild);
+		File imageFileIndex = Util.getImageIndexFile(guild);
 		try {
 			if (!indexDir.exists()) {
 				indexDir.mkdirs();
@@ -82,7 +78,7 @@ public class CommandAddFile extends Command {
 					}
 					i++;
 				}
-				JSONObject obj = getIndexFileContents(guild, audioFileIndex);
+				JSONObject obj = Util.getJsonObjectFromFile(guild, audioFileIndex);
 				JSONArray index = (JSONArray) obj.get("index");
 				if(index == null){
 					index = new JSONArray();
@@ -95,7 +91,7 @@ public class CommandAddFile extends Command {
 				obj.put("index", index);
 				obj.put(command.get(2).toLowerCase() + "_name", filename);
 				obj.put(command.get(2).toLowerCase(), ja);
-				saveIndexFileContents(audioFileIndex, obj);
+				Util.saveJsonToFile(audioFileIndex, obj);
 				channel.sendMessage("Succesfully added file under the name \"" + command.get(2).toLowerCase() + "\"");
 			} else if (isImageFilenameValid(attachments.get(0).getFilename())) {
 				String filename = attachments.get(0).getFilename().toLowerCase();
@@ -119,7 +115,7 @@ public class CommandAddFile extends Command {
 					}
 					i++;
 				}
-				JSONObject obj = getIndexFileContents(guild, imageFileIndex);
+				JSONObject obj = Util.getJsonObjectFromFile(guild, imageFileIndex);
 				JSONArray index = (JSONArray) obj.get("index");
 				if(index == null){
 					index = new JSONArray();
@@ -132,7 +128,7 @@ public class CommandAddFile extends Command {
 				obj.put("index", index);
 				obj.put(command.get(2).toLowerCase() + "_name", filename);
 				obj.put(command.get(2).toLowerCase(), ja);
-				saveIndexFileContents(imageFileIndex, obj);
+				Util.saveJsonToFile(imageFileIndex, obj);
 				channel.sendMessage("Succesfully added file under the name \"" + command.get(2).toLowerCase() + "\"");
 			}else{
 				channel.sendMessage("Invalid file type. Audio clips must be of the `.wav` format and images must be one of the following: `.jpg` `.jpeg` `.png` `.bmp`");
@@ -142,7 +138,6 @@ public class CommandAddFile extends Command {
 
 	private void downloadAttachment(Attachment a, String filename, IGuild guild){
 		try {
-			System.setProperty("http.agent", "Chrome");
 			URL url = new URL(a.getUrl());
 	        BufferedInputStream bis = new BufferedInputStream(url.openStream());
 	        FileOutputStream fis = new FileOutputStream(new File("guilds/" + guild.getStringID() + "/files/" + filename));
@@ -159,34 +154,6 @@ public class CommandAddFile extends Command {
 		}
 	}
 	
-	public static JSONObject getIndexFileContents(IGuild guild, File indexFile) {
-		JSONParser p = new JSONParser();
-		JSONObject obj;
-		try {
-			obj = (JSONObject) p.parse(new FileReader(indexFile));
-		} catch (Exception e) {
-			return new JSONObject();
-		}
-		if (obj != null) {
-			return obj;
-		} else {
-			JSONObject o = new JSONObject(new HashMap<String, String>());
-			return o;
-		}
-	}
-	
-	public static void saveIndexFileContents(File file, JSONObject obj){
-		if(file.exists()) file.delete();
-		try {
-			file.createNewFile();
-			FileWriter writer = new FileWriter(file);
-			writer.write(obj.toJSONString());
-			writer.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
 	public boolean isImageFilenameValid(String filename) {
 		return filename.matches("([^\\s]+(\\.(?i)(jpg|png|bmp|jpeg))$)");
 	}
